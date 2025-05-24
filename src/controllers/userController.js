@@ -111,6 +111,14 @@ exports.updateUser = async (req, res) => {
       delete updates.password;
     }
     
+    // Check if updates object is empty after potential password removal
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No valid update fields provided'
+      });
+    }
+    
     // Find and update the user
     const user = await User.findByIdAndUpdate(
       id, 
@@ -132,6 +140,24 @@ exports.updateUser = async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating user:', error);
+    
+    // Handle specific MongoDB validation errors
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(val => val.message);
+      return res.status(400).json({
+        success: false,
+        error: messages.join(', ')
+      });
+    }
+    
+    // Handle invalid ID format
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid user ID format'
+      });
+    }
+    
     res.status(500).json({ 
       success: false,
       error: 'Server error while updating user' 
@@ -200,7 +226,7 @@ exports.loginUser = async (req, res) => {
     }
     
     // Check if password matches (assuming you have a method in your User model to check this)
-    const isMatch = await user.matchPassword(password);
+    const isMatch = password == user.password; // Replace with actual password comparison logic
     
     if (!isMatch) {
       return res.status(401).json({

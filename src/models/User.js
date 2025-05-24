@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-  userId: { 
+  id: { 
     type: mongoose.Schema.Types.ObjectId,
     default: function () {
       return this._id;
@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
     required: true, 
     unique: true 
   },
-  name: {
+  username: {
     type: String,
     required: true
   },

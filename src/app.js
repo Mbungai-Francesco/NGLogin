@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const app = express();
+const userRoutes = require('./routes/userRoutes');
+const loginRoutes = require('./routes/loginRoute');
 
 dotenv.config();
 
@@ -22,6 +24,10 @@ mongoose.connect(process.env.MONGO_URI)
     console.error('Error connecting to MongoDB:', err);
   });
 
+// Routes
+
+app.use('/api', userRoutes);
+app.use('/api', loginRoutes);
 
 // Default route for health check
 app.get('/', (req, res) => {
