@@ -29,10 +29,10 @@ export const getUser = async () => {
   }
 }
 
-export const loginUser = async (username: string, password: string) => {
+export const loginUser = async (email: string, password: string) => {
   try {
     const res = await axios.post(`${link}/${loginRoute}`, {
-      username,
+      email,
       password
     });
     return res.data.data as User;
