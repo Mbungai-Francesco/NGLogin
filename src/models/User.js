@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId,
+    default: function () {
+      return this._id;
+    },
+    required: true, 
+    unique: true 
+  },
   name: {
     type: String,
     required: true

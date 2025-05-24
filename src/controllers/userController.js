@@ -36,20 +36,20 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.getUserByEmail = async (req, res) => {
+exports.getUser = async (req, res) => {
   try {
-    const { email } = req.params;
+    const { id } = req.params;
     
-    // Validate email parameter
-    if (!email) {
+    // Validate id parameter
+    if (!id) {
       return res.status(400).json({ 
         success: false,
-        error: 'Email parameter is required' 
+        error: 'ID parameter is required' 
       });
     }
     
-    // Find user by email but exclude password
-    const user = await User.findOne({ email }).select('-password');
+    // Find user by id but exclude password
+    const user = await User.findById(id).select('-password');
     
     // Check if user exists
     if (!user) {
@@ -65,7 +65,7 @@ exports.getUserByEmail = async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Error fetching user by email:', error);
+    console.error('Error fetching user by ID:', error);
     res.status(500).json({ 
       success: false,
       error: 'Server error while fetching user' 
@@ -93,16 +93,16 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-exports.updateUserByEmail = async (req, res) => {
+exports.updateUser = async (req, res) => {
   try {
-    const { email } = req.params;
+    const { id } = req.params;
     const updates = req.body;
     
-    // Validate email parameter
-    if (!email) {
+    // Validate id parameter
+    if (!id) {
       return res.status(400).json({ 
         success: false,
-        error: 'Email parameter is required' 
+        error: 'ID parameter is required' 
       });
     }
     
@@ -112,8 +112,8 @@ exports.updateUserByEmail = async (req, res) => {
     }
     
     // Find and update the user
-    const user = await User.findOneAndUpdate(
-      { email }, 
+    const user = await User.findByIdAndUpdate(
+      id, 
       updates, 
       { new: true, runValidators: true }
     ).select('-password');
@@ -141,18 +141,18 @@ exports.updateUserByEmail = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const { email } = req.params;
+    const { id } = req.params;
     
-    // Validate email parameter
-    if (!email) {
+    // Validate id parameter
+    if (!id) {
       return res.status(400).json({ 
         success: false,
-        error: 'Email parameter is required' 
+        error: 'ID parameter is required' 
       });
     }
     
     // Find and delete the user
-    const user = await User.findOneAndDelete({ email });
+    const user = await User.findByIdAndDelete(id);
     
     // Check if user exists
     if (!user) {
